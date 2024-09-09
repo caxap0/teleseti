@@ -47,8 +47,6 @@ utf8_to_cp1251 = {
 }
 
 message = "Привет, мир!"
-binary_file = 'binary.txt'
-text_file = 'text.txt'
 encoded_text = Coder(message, utf8_to_cp1251)
 encoded = encoded_text.utf8_to_windows1251()
 bin_encoded = encoded_text.windows1251_to_bin(encoded)
@@ -63,8 +61,11 @@ def save_binary_file(file, bin_text):
 
 # кнопка сохранения в текстовый файл
 def save_text_file(file, text):
+    text = ' '.join(f'{byte:02x}' for byte in text)
     with open(file, 'w') as file:
         file.write(text)
 
 
+save_binary_file('binary.txt', encoded)
+save_text_file('text.txt', encoded)
 print(encoded, bin_encoded, decoded, sep='\n')
