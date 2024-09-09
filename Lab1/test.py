@@ -54,13 +54,17 @@ encoded = encoded_text.utf8_to_windows1251()
 bin_encoded = encoded_text.windows1251_to_bin(encoded)
 decoded = encoded_text.windows1251_to_utf8(encoded)
 
+
 # кнопка сохранения в бинарный файл
-with open(binary_file, 'wb') as file:
-    file.write(encoded)
+def save_binary_file(file, bin_text):
+    with open(file, 'wb') as file:
+        file.write(bin_text)
+
 
 # кнопка сохранения в текстовый файл
-# with open(text_file, 'w') as file:
-#     file.write(encoded)
+def save_text_file(file, text):
+    with open(file, 'w') as file:
+        file.write(text)
 
 
 print(encoded, bin_encoded, decoded, sep='\n')
