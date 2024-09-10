@@ -49,12 +49,6 @@ utf8_to_cp1251 = {
     ' ': 0x20, '.': 0x2E, ',': 0x2C, '!': 0x21, '?': 0x3F,
 }
 
-# message = "Привет, мир!"
-# encoded_text = Coder(message, utf8_to_cp1251)
-# encoded = encoded_text.utf8_to_windows1251()
-# bin_encoded = encoded_text.windows1251_to_bin(encoded)
-# decoded = encoded_text.windows1251_to_utf8(encoded)
-
 # Окно
 root = tk.Tk()
 root.title("Кодировщик")
@@ -106,25 +100,28 @@ def decode_text():
     input_text.insert("1.0", "Декодировано: " + text_decode)
 
 
-# # кнопка сохранения в бинарный файл
-# def save_binary_file(file, bin_text):
-#     with open(file, 'wb') as file:
-#         file.write(bin_text)
+# кнопка сохранения в бинарный файл
+def save_binary_file():
+    with open('binary.txt', 'wb') as file:
+        bin_text = output_text.get("1.0", tk.END)
+        file.write(str.encode(bin_text))
 
-# # кнопка сохранения в текстовый файл
-# def save_text_file(file, text):
-#     text = ' '.join(f'{byte:02x}' for byte in text)
-#     with open(file, 'w') as file:
-#         file.write(text)
+
+# кнопка сохранения в текстовый файл
+def save_text_file():
+    with open('text.txt', 'w') as file:
+        text = output_text.get("1.0", tk.END)
+        file.write(text)
+
 
 # Кнопки
 encode_button = tk.Button(button_frame, text="Кодировать", width=20, command=encode_text)
 encode_button.pack(pady=5)
 decode_button = tk.Button(button_frame, text="Декодировать", width=20, command=decode_text)
 decode_button.pack(pady=5)
-save_bin_button = tk.Button(button_frame, text="Сохранить в бинарный файл", width=20)
+save_bin_button = tk.Button(button_frame, text="Сохранить в бинарный файл", width=20, command=save_binary_file)
 save_bin_button.pack(pady=5)
-save_text_button = tk.Button(button_frame, text="Сохранить в текстовый файл", width=20)
+save_text_button = tk.Button(button_frame, text="Сохранить в текстовый файл", width=20, command=save_text_file)
 save_text_button.pack(pady=5)
 
 # Настройка масштабирования для кнопок
@@ -132,8 +129,3 @@ button_frame.grid_rowconfigure(0, weight=1)
 button_frame.grid_columnconfigure(0, weight=1)
 
 root.mainloop()
-
-
-# save_binary_file('binary.txt', encoded)
-# save_text_file('text.txt', encoded)
-# print(encoded, bin_encoded, decoded, sep='\n')
