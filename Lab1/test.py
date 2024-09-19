@@ -47,84 +47,87 @@ class Coder:
         return result
 
 
+def gui():
+    # Окно
+    root = tk.Tk()
+    root.title("Кодировщик")
 
-# Окно
-root = tk.Tk()
-root.title("Кодировщик")
+    # Рамка
+    main_frame = tk.Frame(root)
+    main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-# Рамка
-main_frame = tk.Frame(root)
-main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+    # Настройка масштабирования в сетке для рамки, чтоб при увеличении окна - увеличивалось и всё остальное
+    main_frame.grid_rowconfigure(0, weight=1)
+    main_frame.grid_columnconfigure(0, weight=1)  # Месседжбокс 1
+    main_frame.grid_columnconfigure(1, weight=0)  # Рамка для кнопок
+    main_frame.grid_columnconfigure(2, weight=1)  # Месседжбокс 2
 
-# Настройка масштабирования в сетке для рамки, чтоб при увеличении окна - увеличивалось и всё остальное
-main_frame.grid_rowconfigure(0, weight=1)
-main_frame.grid_columnconfigure(0, weight=1)  # Месседжбокс 1
-main_frame.grid_columnconfigure(1, weight=0)  # Рамка для кнопок
-main_frame.grid_columnconfigure(2, weight=1)  # Месседжбокс 2
+    # Месседжбокс 1
+    input_text = tk.Text(main_frame, height=20, width=40)
+    input_text.grid(row=0, column=0, padx=10, pady=5, sticky='nsew')
 
-# Месседжбокс 1
-input_text = tk.Text(main_frame, height=20, width=40)
-input_text.grid(row=0, column=0, padx=10, pady=5, sticky='nsew')
+    # Рамка для кнопок
+    button_frame = tk.Frame(main_frame)
+    button_frame.grid(row=0, column=1, padx=10, pady=5)
 
-# Рамка для кнопок
-button_frame = tk.Frame(main_frame)
-button_frame.grid(row=0, column=1, padx=10, pady=5)
-
-# Месседжбокс 2
-output_text = tk.Text(main_frame, height=20, width=40)
-output_text.grid(row=0, column=2, padx=10, pady=5, sticky='nsew')
-
-
-# кнопка кодирования
-def encode_text():
-    text = input_text.get("1.0", tk.END).strip()
-    encode = Coder(text)
-    utf_encoded = encode.utf8_to_windows1251()
-    # для красивого вывода в месседжбоксе нужно переделать под 16ричный формат
-    hex_encoded = ' '.join(f'{byte:02x}' for byte in utf_encoded)
-    bin_encoded = encode.windows1251_to_bin(utf_encoded)
-    output_text.delete("1.0", tk.END)
-    output_text.insert("1.0", hex_encoded + '\n')
-    output_text.insert("2.0", bin_encoded)
+    # Месседжбокс 2
+    output_text = tk.Text(main_frame, height=20, width=40)
+    output_text.grid(row=0, column=2, padx=10, pady=5, sticky='nsew')
 
 
-# кнопка декодирования
-def decode_text():
-    text = output_text.get("1.0", "2.0").strip()
-    # т.к. мы выводим в хексе, нужно вернуть обратно в байты
-    encoded_bytes = bytes.fromhex(text)
-    encode = Coder(text)
-    text_decode = encode.windows1251_to_utf8(encoded_bytes)
-    input_text.delete("1.0", tk.END)
-    input_text.insert("1.0", "Декодировано: " + text_decode)
+    # кнопка кодирования
+    def encode_text():
+        text = input_text.get("1.0", tk.END).strip()
+        encode = Coder(text)
+        utf_encoded = encode.utf8_to_windows1251()
+        # для красивого вывода в месседжбоксе нужно переделать под 16ричный формат
+        hex_encoded = ' '.join(f'{byte:02x}' for byte in utf_encoded)
+        bin_encoded = encode.windows1251_to_bin(utf_encoded)
+        output_text.delete("1.0", tk.END)
+        output_text.insert("1.0", hex_encoded + '\n')
+        output_text.insert("2.0", bin_encoded)
 
 
-# кнопка сохранения в бинарный файл
-def save_binary_file():
-    with open('binary.txt', 'wb') as file:
-        bin_text = output_text.get("1.0", tk.END)
-        file.write(str.encode(bin_text))
+    # кнопка декодирования
+    def decode_text():
+        text = output_text.get("1.0", "2.0").strip()
+        # т.к. мы выводим в хексе, нужно вернуть обратно в байты
+        encoded_bytes = bytes.fromhex(text)
+        encode = Coder(text)
+        text_decode = encode.windows1251_to_utf8(encoded_bytes)
+        input_text.delete("1.0", tk.END)
+        input_text.insert("1.0", "Декодировано: " + text_decode)
 
 
-# кнопка сохранения в текстовый файл
-def save_text_file():
-    with open('text.txt', 'w') as file:
-        text = output_text.get("1.0", tk.END)
-        file.write(text)
+    # кнопка сохранения в бинарный файл
+    def save_binary_file():
+        with open('binary.txt', 'wb') as file:
+            bin_text = output_text.get("1.0", tk.END)
+            file.write(str.encode(bin_text))
 
 
-# Кнопки
-encode_button = tk.Button(button_frame, text="Кодировать", width=20, command=encode_text)
-encode_button.pack(pady=5)
-decode_button = tk.Button(button_frame, text="Декодировать", width=20, command=decode_text)
-decode_button.pack(pady=5)
-save_bin_button = tk.Button(button_frame, text="Сохранить в бинарный файл", width=20, command=save_binary_file)
-save_bin_button.pack(pady=5)
-save_text_button = tk.Button(button_frame, text="Сохранить в текстовый файл", width=20, command=save_text_file)
-save_text_button.pack(pady=5)
+    # кнопка сохранения в текстовый файл
+    def save_text_file():
+        with open('text.txt', 'w') as file:
+            text = output_text.get("1.0", tk.END)
+            file.write(text)
 
-# Настройка масштабирования для кнопок
-button_frame.grid_rowconfigure(0, weight=1)
-button_frame.grid_columnconfigure(0, weight=1)
 
-root.mainloop()
+    # Кнопки
+    encode_button = tk.Button(button_frame, text="Кодировать", width=20, command=encode_text)
+    encode_button.pack(pady=5)
+    decode_button = tk.Button(button_frame, text="Декодировать", width=20, command=decode_text)
+    decode_button.pack(pady=5)
+    save_bin_button = tk.Button(button_frame, text="Сохранить в бинарный файл", width=20, command=save_binary_file)
+    save_bin_button.pack(pady=5)
+    save_text_button = tk.Button(button_frame, text="Сохранить в текстовый файл", width=20, command=save_text_file)
+    save_text_button.pack(pady=5)
+
+    # Настройка масштабирования для кнопок
+    button_frame.grid_rowconfigure(0, weight=1)
+    button_frame.grid_columnconfigure(0, weight=1)
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    gui()
