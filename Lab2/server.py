@@ -9,4 +9,4 @@ print("Сервер ожидает сообщения...")
 # Ожидание сообщения
 while True:
     message, address = server_socket.recvfrom(1024)  # 1024 - размер буфера
-    print(f"Сообщение от {address}: {message}")
+    print(f"Сообщение от {address}: {message.decode()}")
