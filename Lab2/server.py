@@ -1,18 +1,22 @@
 import socket
 import tkinter as tk
 import threading
+from datetime import datetime
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_socket.bind(("127.0.0.1", 12345))
+now = datetime.now()
 
 
 def message():
     while True:
         output_text.delete(tk.END)
+        timing = now.strftime("%d.%m.%Y._%H-%M-%S")
         message, address = server_socket.recvfrom(1024)
         output_text.insert("1.0", f'Вам пришло сообщение от {address}: \n{message.decode()}')
-        with open('save.txt', 'a') as file:
+        with open(f'{timing}.txt', 'a') as file:
             file.write(f"Сообщение от {address}: {message.decode()}\n")
+
 
 def treads():
     tread = threading.Thread(target=message)
@@ -32,6 +36,3 @@ output_text.grid(row=0, column=0, padx=10, pady=5, sticky='nsew')
 treads()
 
 root.mainloop()
-
-
-
