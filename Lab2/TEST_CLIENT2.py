@@ -36,8 +36,6 @@ def receive_message(output_text1, output_text2):
 
 def gui():
     root = tk.Tk()
-    root.title("UDP Messenger")
-
     main_frame = tk.Frame(root)
     main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
@@ -57,40 +55,30 @@ def gui():
     input_text = tk.Text(main_frame, height=3, borderwidth=2)
     input_text.grid(row=1, column=0, columnspan=2, padx=10, pady=5, sticky='nsew')
 
-    # Добавляем поля для IP сервера и клиента
-    server_ip_label = tk.Label(main_frame, text="Server IP:")
-    server_ip_label.grid(row=2, column=0, padx=5, pady=5, sticky='e')
     server_ip_entry = tk.Entry(main_frame, width=15)
     server_ip_entry.grid(row=2, column=1, padx=5, pady=5, sticky='w')
-    server_ip_entry.insert(0, '127.0.0.1')  # Значение по умолчанию
 
-    client_ip_label = tk.Label(main_frame, text="Client IP:")
-    client_ip_label.grid(row=3, column=0, padx=5, pady=5, sticky='e')
     client_ip_entry = tk.Entry(main_frame, width=15)
     client_ip_entry.grid(row=3, column=1, padx=5, pady=5, sticky='w')
-    client_ip_entry.insert(0, '127.0.0.1')  # Значение по умолчанию
 
     def send_message():
         global server_socket, client_socket
 
         message = input_text.get("1.0", tk.END).strip()
 
-        # Получаем IP-адреса из текстовых полей
         server_ip = server_ip_entry.get().strip()
         client_ip = client_ip_entry.get().strip()
 
-        try:
-            # Убедимся, что IP-адреса корректны
-            socket.inet_aton(server_ip)
-            socket.inet_aton(client_ip)
-        except socket.error:
-            output_text1.insert(tk.END, 'Ошибка: Некорректный IP-адрес\n')
-            return
+        # try:
+        #     socket.inet_aton(server_ip)
+        #     socket.inet_aton(client_ip)
+        # except socket.error:
+        #     output_text1.insert(tk.END, 'Ошибка: Некорректный IP-адрес\n')
+        #     return
 
         server_address = (server_ip, 12346)
         client_address = (client_ip, 12345)
 
-        # Создание сокетов после ввода IP
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -109,7 +97,6 @@ def gui():
 
         client_socket.sendto(message.encode('utf-8'), client_address)
 
-        # Запуск потока приема сообщений
         receive_thread = threading.Thread(target=receive_message, args=(output_text1, output_text2))
         receive_thread.daemon = True
         receive_thread.start()
