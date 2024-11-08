@@ -19,6 +19,5 @@ while True:
     else:
         print(data)
         conn.send(b'Hello from server!')
-        conn.close()
     
 tcp_socket.close()

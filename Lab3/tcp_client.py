@@ -15,8 +15,7 @@ while True:
     data = str.encode(data)
     tcp_socket.send(data)
     data = bytes.decode(data)
-    data = tcp_socket.recv(1024)
+    rata = tcp_socket.recv(1024)
     print(data)
-
 
     tcp_socket.close()

@@ -11,10 +11,11 @@ now = datetime.now()
 
 
 def receive_message(output_text1, output_text2):
-    global server_socket
     while True:
         try:
             client_conn, addr = server_socket.accept()
+
+            print(f'{addr} подключился')
             data = client_conn.recv(1024)
             decoded_message = data.decode('utf-8')
 
@@ -72,8 +73,8 @@ def gui():
         server_ip = '127.0.0.1'
         client_ip = client_ip_entry.get().strip()
 
-        server_address = (server_ip, 12346)
-        client_address = (client_ip, 12345)
+        server_address = (server_ip, 12345)
+        client_address = (client_ip, 12346)
 
         server_socket.bind(server_address)
         server_socket.listen(5)
@@ -81,7 +82,6 @@ def gui():
         client_socket.connect(server_address)
 
     def send_message():
-        global server_adress
         message = input_text.get("1.0", tk.END).strip()
 
         code_message = Coder(message)
